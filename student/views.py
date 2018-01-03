@@ -32,6 +32,9 @@ def student_new(request):
     print(request.user)
     return render(request, 'student/student_new.html', {'form': form})
 
+def student_detail(request,pk):
+    student = get_object_or_404(Student, pk=pk)
+    return render(request, 'student/student_detail.html', {'student': student})
 
 # Student JSON list filtering
 class student_list_json(BaseDatatableView):
@@ -107,8 +110,8 @@ class student_list_json(BaseDatatableView):
                 # item.course,
                 item.get_course_display(),
                 str(item.pk),
-                # reverse_lazy('student_detail',kwargs={'pk': str(item.pk)})
-                reverse_lazy('student_home'),
+                reverse_lazy('student_detail',kwargs={'pk': str(item.pk)})
+                # reverse_lazy('student_home'),
             ])
             # print(json_data)
         return json_data

@@ -144,5 +144,3 @@ class student_list_json(BaseDatatableView):
             ])
             # print(json_data)
         return json_data
-
-

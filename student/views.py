@@ -32,6 +32,23 @@ def student_new(request):
     print(request.user)
     return render(request, 'student/student_new.html', {'form': form})
 
+def student_edit(request,pk):
+
+    student = get_object_or_404(Student, pk=pk)
+    if request.method == "POST":
+        form = StudentForm(request.POST,instance=student)
+        if form.is_valid():
+            student = form.save(commit=False)
+            student.createdby = request.user
+            student.save()
+            # return redirect('post_detail', pk=post.pk)
+            messages.success(request, "Student record with ID: " + str(student.pk) + " has been updated! ")
+            return redirect(reverse_lazy('student_detail',kwargs={'pk': student.pk }))
+    else:
+        form = StudentForm(instance=student)
+    
+    return render(request, 'student/student_edit.html', {'form': form})
+
 def student_detail(request,pk):
     student = get_object_or_404(Student, pk=pk)
     return render(request, 'student/student_detail.html', {'student': student})
@@ -115,3 +132,5 @@ class student_list_json(BaseDatatableView):
             ])
             # print(json_data)
         return json_data
+
+

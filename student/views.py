@@ -3,7 +3,7 @@ from django.urls import reverse_lazy
 from django.contrib import messages
 # from django.utils import timezone
 from .models import Student
-# from .forms import MessageForm, SearchForm, StudentForm
+from .forms import StudentForm
 # from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.contrib.auth.decorators import login_required
 from django_datatables_view.base_datatable_view import BaseDatatableView
@@ -16,6 +16,21 @@ def home(request):
 
 def home_json(request):
     return render(request, 'student/home_json.html')
+
+def student_new(request):
+
+    if request.method == "POST":
+        form = StudentForm(request.POST)
+        if form.is_valid():
+            student = form.save(commit=False)
+            student.createdby = request.user
+            student.save()
+            messages.success(request, "Student record with ID: " + str(student.pk) + " has been created ! ")
+            # return redirect(reverse_lazy('student_detail',kwargs={'pk': student.pk }))
+    else:
+        form = StudentForm()
+    print(request.user)
+    return render(request, 'student/student_new.html', {'form': form})
 
 
 # Student JSON list filtering
